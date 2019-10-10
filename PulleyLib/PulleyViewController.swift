@@ -194,9 +194,9 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
                 return
             }
             
-            controller.willMove(toParentViewController: nil)
+            controller.willMove(toParent: nil)
             controller.view.removeFromSuperview()
-            controller.removeFromParentViewController()
+            controller.removeFromParent()
         }
         
         didSet {
@@ -205,13 +205,13 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
                 return
             }
             
-            addChildViewController(controller)
+            addChild(controller)
             
             primaryContentContainer.addSubview(controller.view)
             
             controller.view.constrainToParent()
             
-            controller.didMove(toParentViewController: self)
+            controller.didMove(toParent: self)
             
             if self.isViewLoaded
             {
@@ -229,9 +229,9 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
                 return
             }
             
-            controller.willMove(toParentViewController: nil)
+            controller.willMove(toParent: nil)
             controller.view.removeFromSuperview()
-            controller.removeFromParentViewController()
+            controller.removeFromParent()
         }
         
         didSet {
@@ -240,13 +240,13 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
                 return
             }
             
-            addChildViewController(controller)
+            addChild(controller)
             
             drawerContentContainer.addSubview(controller.view)
             
             controller.view.constrainToParent()
             
-            controller.didMove(toParentViewController: self)
+            controller.didMove(toParent: self)
             
             if self.isViewLoaded
             {
@@ -475,7 +475,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     }
     
     /// The animation options for setting the drawer position
-    public var animationOptions: UIViewAnimationOptions = [.curveEaseInOut]
+    public var animationOptions: UIView.AnimationOptions = [.curveEaseInOut]
     
     /// The drawer snap mode
     public var snapMode: PulleySnapMode = .nearestPositionUnlessExceeded(threshold: 20.0)
@@ -667,7 +667,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         drawerScrollView.canCancelContentTouches = canCancelContentTouches
         
         drawerScrollView.backgroundColor = UIColor.clear
-        drawerScrollView.decelerationRate = UIScrollViewDecelerationRateFast
+        drawerScrollView.decelerationRate = UIScrollView.DecelerationRate.fast
         drawerScrollView.scrollsToTop = false
         drawerScrollView.touchDelegate = self
         
@@ -717,7 +717,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
             assert(primaryContentContainerView != nil && drawerContentContainerView != nil, "When instantiating from Interface Builder you must provide container views with an embedded view controller.")
             
             // Locate main content VC
-            for child in self.childViewControllers
+            for child in self.children
             {
                 if child.view == primaryContentContainerView.subviews.first
                 {
@@ -759,7 +759,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
             if primary.view.superview != nil && primary.view.superview != primaryContentContainer
             {
                 primaryContentContainer.addSubview(primary.view)
-                primaryContentContainer.sendSubview(toBack: primary.view)
+                primaryContentContainer.sendSubviewToBack(primary.view)
                 
                 primary.view.constrainToParent()
             }
@@ -771,7 +771,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
             if drawer.view.superview != nil && drawer.view.superview != drawerContentContainer
             {
                 drawerContentContainer.addSubview(drawer.view)
-                drawerContentContainer.sendSubview(toBack: drawer.view)
+                drawerContentContainer.sendSubviewToBack(drawer.view)
                 
                 drawer.view.constrainToParent()
             }
@@ -1004,7 +1004,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         
         // Invert mask to cut away the bottom part of the dimming view
         borderPath.append(UIBezierPath(rect: backgroundDimmingView.bounds))
-        maskLayer.fillRule = kCAFillRuleEvenOdd
+        maskLayer.fillRule = CAShapeLayerFillRule.evenOdd
         
         maskLayer.path = borderPath.cgPath
         backgroundDimmingView.layer.mask = maskLayer
@@ -1080,7 +1080,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         let animation = CAKeyframeAnimation(keyPath: "bounds.origin.y")
         animation.repeatCount = 1
         animation.duration = (32.0/30.0) * speedMultiplier;
-        animation.fillMode = kCAFillModeForwards
+        animation.fillMode = CAMediaTimingFillMode.forwards
         animation.values = values
         animation.isRemovedOnCompletion = true
         animation.autoreverses = false
@@ -1354,7 +1354,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
     }
     
     // MARK: Propogate child view controller style / status bar presentation based on drawer state
-    override open var childViewControllerForStatusBarStyle: UIViewController? {
+    override open var childForStatusBarStyle: UIViewController? {
         get {
             
             if drawerPosition == .open {
@@ -1365,7 +1365,7 @@ open class PulleyViewController: UIViewController, PulleyDrawerViewControllerDel
         }
     }
     
-    override open var childViewControllerForStatusBarHidden: UIViewController? {
+    override open var childForStatusBarHidden: UIViewController? {
         get {
             if drawerPosition == .open {
                 return drawerContentViewController
